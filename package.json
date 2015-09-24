@@ -1,0 +1,37 @@
+{
+  "name": "hipstat",
+  "version": "0.0.0",
+  "description": "Update your HipChat status",
+  "homepage": "",
+  "repository": "macklinu/hipstat",
+  "author": {
+    "name": "Macklin Underdown",
+    "email": "macklinu@gmail.com",
+    "url": "mackli.nu"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "keywords": [
+    "hipchat"
+  ],
+  "devDependencies": {
+    "gulp": "^3.6.0",
+    "gulp-eslint": "^1.0.0",
+    "gulp-exclude-gitignore": "^1.0.0",
+    "gulp-istanbul": "^0.9.0",
+    "gulp-mocha": "^2.0.0",
+    "gulp-plumber": "^1.0.0",
+    "gulp-nsp": "^0.4.5",
+    "gulp-coveralls": "^0.1.0",
+    "gulp-babel": "^5.1.0",
+    "babel-core": "^5.5.0",
+    "isparta": "^3.0.3"
+  },
+  "scripts": {
+    "prepublish": "gulp prepublish",
+    "test": "gulp"
+  },
+  "license": "Apache-2.0"
+}
