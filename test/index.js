@@ -4,9 +4,9 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 chai.use(sinonChai);
 import Hipchatter from 'hipchatter';
-import HipStat from '../lib/';
+import hipstat from '../lib/';
 
-describe('HipStat', () => {
+describe('hipstat', () => {
 
   var viewUserStub;
   var updateUserStub;
@@ -25,21 +25,21 @@ describe('HipStat', () => {
 
     it('should throw when options are undefined', () => {
       expect(() => {
-        new HipStat().user(null, () => {});
-      }).to.throw(/Must pass in options.status but was undefined/);
+        hipstat(null, () => {});
+      }).to.throw(/'options.status' must not be undefined/);
     });
 
     describe('.status', () => {
 
       it('should throw when undefined', () => {
         expect(() => {
-          new HipStat().user({}, () => {});
-        }).to.throw(/Must pass in options.status but was undefined/);
+          hipstat({}, () => {});
+        }).to.throw(/'options.status' must not be undefined/);
       });
 
       it('should not throw when status is an empty String', () => {
         expect(() => {
-          new HipStat().user({status: '', show: 'chat'}, () => {});
+          hipstat({status: '', show: 'chat'}, () => {});
         }).not.to.throw();
       });
 
@@ -49,8 +49,8 @@ describe('HipStat', () => {
 
       it('should throw when undefined', () => {
         expect(() => {
-          new HipStat().user({ status: 'test status' }, () => {});
-        }).to.throw(/Must pass in options.show but was undefined/);
+          hipstat({ status: 'test status' }, () => {});
+        }).to.throw(/'options.show' must not be undefined/);
       });
 
       it('should throw when invalid', () => {
@@ -59,7 +59,7 @@ describe('HipStat', () => {
           show: 'back'
         };
         expect(() => {
-          new HipStat().user(options, () => {});
+          hipstat(options, () => {});
         }).to.throw(/Invalid option 'back' for options.show/);
       });
 
@@ -70,12 +70,13 @@ describe('HipStat', () => {
             show: item
           };
           expect(() => {
-            new HipStat().user(options, () => {});
+            hipstat(options, () => {});
           }).not.to.throw();
         });
       });
 
     });
+
   });
 
 });
