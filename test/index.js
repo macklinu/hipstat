@@ -6,27 +6,39 @@ chai.use(sinonChai);
 import Hipchatter from 'hipchatter';
 import hipstat from '../lib/';
 
+/*eslint-disable no-unused-expressions */
+
 describe('hipstat', () => {
 
-  var viewUserStub;
-  var updateUserStub;
+  const STATUS = 'test';
+  const SHOW = 'chat';
+  const OPTIONS = {
+    status: STATUS,
+    show: SHOW
+  };
+
+  let viewUser;
+  let updateUser;
+  let callbackSpy;
 
   beforeEach(() => {
-    viewUserStub = sinon.stub(Hipchatter.prototype, 'view_user');
-    updateUserStub = sinon.stub(Hipchatter.prototype, 'update_user');
+    viewUser = sinon.stub(Hipchatter.prototype, 'view_user');
+    updateUser = sinon.stub(Hipchatter.prototype, 'update_user');
+    callbackSpy = sinon.spy();
   });
 
   afterEach(() => {
-    viewUserStub.restore();
-    updateUserStub.restore();
+    Hipchatter.prototype.view_user.restore();
+    Hipchatter.prototype.update_user.restore();
   });
 
   describe('options', () => {
 
     it('should throw when options are undefined', () => {
       expect(() => {
-        hipstat(null, () => {});
+        hipstat(null, callbackSpy);
       }).to.throw(/'options.status' must not be undefined/);
+      expect(callbackSpy).not.to.have.been.calledOnce;
     });
 
     describe('.status', () => {
@@ -39,8 +51,9 @@ describe('hipstat', () => {
 
       it('should not throw when status is an empty String', () => {
         expect(() => {
-          hipstat({status: '', show: 'chat'}, () => {});
+          hipstat({status: '', show: 'chat'}, callbackSpy);
         }).not.to.throw();
+        expect(callbackSpy).not.to.have.been.calledOnce;
       });
 
     });
@@ -48,19 +61,26 @@ describe('hipstat', () => {
     describe('.show', () => {
 
       it('should throw when undefined', () => {
+        let options = {
+          status: 'test'
+        };
+
         expect(() => {
-          hipstat({ status: 'test status' }, () => {});
+          hipstat(options, callbackSpy);
         }).to.throw(/'options.show' must not be undefined/);
+        expect(callbackSpy).not.to.have.been.calledOnce;
       });
 
       it('should throw when invalid', () => {
-        let options = {
-          status: 'test status',
+        let invalidOptions = {
+          status: 'test',
           show: 'back'
         };
+
         expect(() => {
-          hipstat(options, () => {});
-        }).to.throw(/Invalid option 'back' for options.show/);
+          hipstat(invalidOptions, callbackSpy);
+        }).to.throw(/Collection does not contain 'back' for 'options.show'.*/);
+        expect(callbackSpy).not.to.have.been.calledOnce;
       });
 
       ['chat', 'away', 'dnd', 'xa'].forEach((item) => {
@@ -69,9 +89,11 @@ describe('hipstat', () => {
             status: 'test',
             show: item
           };
+
           expect(() => {
-            hipstat(options, () => {});
+            hipstat(options, callbackSpy);
           }).not.to.throw();
+          expect(viewUser).to.have.been.calledOnce;
         });
       });
 
@@ -79,4 +101,66 @@ describe('hipstat', () => {
 
   });
 
+  describe('update status', () => {
+
+    describe('failure', () => {
+
+      it('should callback with error when retrieving user fails', () => {
+        let error = 'error';
+
+        hipstat(OPTIONS, callbackSpy);
+        viewUser.callArgWith(1, error, null);
+
+        expect(callbackSpy).to.have.been.calledWith(error, null);
+        expect(updateUser).not.to.have.been.calledOnce;
+      });
+
+      it('should callback with error when updating user fails', () => {
+        let error = 'error';
+        let user = {
+          presence: null
+        };
+
+        hipstat(OPTIONS, callbackSpy);
+        viewUser.callArgWith(1, null, user);
+        updateUser.callArgWith(1, error, null);
+
+        expect(callbackSpy).to.have.been.calledWith(error, null);
+        expect(viewUser).to.have.been.calledOnce;
+        expect(updateUser).to.have.been.calledOnce;
+      });
+
+    });
+
+    describe('success', () => {
+
+      it('should callback with successful response when retrieving and updating user succeed', () => {
+        let user = {};
+        let successResponse = 'success';
+
+        hipstat(OPTIONS, callbackSpy);
+        viewUser.callArgWith(1, null, user);
+        updateUser.callArgWith(1, null, successResponse);
+
+        expect(callbackSpy).to.have.been.calledWith(null, successResponse);
+        expect(viewUser).to.have.been.calledOnce;
+        expect(updateUser).to.have.been.calledOnce;
+      });
+
+      it('should modify user.presence with updated status and availability', () => {
+        let user = {};
+
+        hipstat(OPTIONS, callbackSpy);
+        viewUser.callArgWith(1, null, user);
+
+        expect(user.presence.status).to.equal(STATUS);
+        expect(user.presence.show).to.equal(SHOW);
+      });
+
+    });
+
+  });
+
 });
+
+/*eslint-enable no-unused-expressions */
