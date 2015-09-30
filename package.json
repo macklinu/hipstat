@@ -1,8 +1,8 @@
 {
   "name": "hipstat",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Update your HipChat status",
-  "homepage": "",
+  "homepage": "https://github.com/macklinu/hipstat",
   "repository": "macklinu/hipstat",
   "author": {
     "name": "Macklin Underdown",
@@ -13,6 +13,7 @@
     "dist"
   ],
   "main": "dist/index.js",
+  "bin": "lib/cli.js",
   "keywords": [
     "hipchat"
   ],
@@ -41,6 +42,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "dotenv": "^1.2.0",
-    "hipchatter": "^0.2.0"
+    "hipchatter": "^0.2.0",
+    "meow": "^3.3.0"
   }
 }

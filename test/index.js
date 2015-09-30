@@ -10,18 +10,13 @@ import hipstat from '../lib/';
 
 describe('hipstat', () => {
 
-  const STATUS = 'test';
-  const SHOW = 'chat';
-  const OPTIONS = {
-    status: STATUS,
-    show: SHOW
-  };
-
+  let user;
   let viewUser;
   let updateUser;
   let callbackSpy;
 
   beforeEach(() => {
+    user = {};
     viewUser = sinon.stub(Hipchatter.prototype, 'view_user');
     updateUser = sinon.stub(Hipchatter.prototype, 'update_user');
     callbackSpy = sinon.spy();
@@ -32,96 +27,96 @@ describe('hipstat', () => {
     Hipchatter.prototype.update_user.restore();
   });
 
-  describe('options', () => {
+  describe('parameters', () => {
+    describe('input', () => {
+      it('should default to an empty string', () => {
+        hipstat([], {}, callbackSpy);
+        viewUser.callArgWith(1, null, user);
 
-    it('should throw when options are undefined', () => {
-      expect(() => {
-        hipstat(null, callbackSpy);
-      }).to.throw(/'options.status' must not be undefined/);
-      expect(callbackSpy).not.to.have.been.calledOnce;
+        expect(user.presence)
+          .to.have.property('status')
+          .and.to.equal('');
+      });
+      it('should properly pass through one-word input', () => {
+        hipstat(['hello'], {}, callbackSpy);
+        viewUser.callArgWith(1, null, user);
+
+        expect(user.presence)
+          .to.have.property('status')
+          .and.to.equal('hello');
+      });
+      it('should properly concatenate multiple-word input', () => {
+        hipstat(['hello', 'from', 'outer', 'space'], {}, callbackSpy);
+        viewUser.callArgWith(1, null, user);
+
+        expect(user.presence)
+          .to.have.property('status')
+          .and.to.equal('hello from outer space');
+      });
     });
+    describe('flags', () => {
+      it('should default to online', () => {
+        hipstat([], {}, callbackSpy);
+        viewUser.callArgWith(1, null, user);
 
-    describe('.status', () => {
-
-      it('should throw when undefined', () => {
-        expect(() => {
-          hipstat({}, () => {});
-        }).to.throw(/'options.status' must not be undefined/);
+        expect(user.presence)
+          .to.have.property('show')
+          .and.to.equal('chat');
       });
+      it('should parse --online as \'chat\'', () => {
+        hipstat([], {online: true}, callbackSpy);
+        viewUser.callArgWith(1, null, user);
 
-      it('should not throw when status is an empty String', () => {
-        expect(() => {
-          hipstat({status: '', show: 'chat'}, callbackSpy);
-        }).not.to.throw();
-        expect(callbackSpy).not.to.have.been.calledOnce;
+        expect(user.presence)
+          .to.have.property('show')
+          .and.to.equal('chat');
       });
+      it('should parse --away as \'away\'', () => {
+        hipstat([], {away: true}, callbackSpy);
+        viewUser.callArgWith(1, null, user);
 
+        expect(user.presence)
+          .to.have.property('show')
+          .and.to.equal('away');
+      });
+      it('should parse --busy as \'dnd\'', () => {
+        hipstat([], {busy: true}, callbackSpy);
+        viewUser.callArgWith(1, null, user);
+
+        expect(user.presence)
+          .to.have.property('show')
+          .and.to.equal('dnd');
+      });
+      it('should parse multiple flags in order of online status [online, away, busy]', () => {
+        hipstat([], {
+          online: true,
+          away: true,
+          busy: true
+        }, callbackSpy);
+        viewUser.callArgWith(1, null, user);
+
+        expect(user.presence)
+          .to.have.property('show')
+          .and.to.equal('chat');
+      });
     });
-
-    describe('.show', () => {
-
-      it('should throw when undefined', () => {
-        let options = {
-          status: 'test'
-        };
-
-        expect(() => {
-          hipstat(options, callbackSpy);
-        }).to.throw(/'options.show' must not be undefined/);
-        expect(callbackSpy).not.to.have.been.calledOnce;
-      });
-
-      it('should throw when invalid', () => {
-        let invalidOptions = {
-          status: 'test',
-          show: 'back'
-        };
-
-        expect(() => {
-          hipstat(invalidOptions, callbackSpy);
-        }).to.throw(/Collection does not contain 'back' for 'options.show'.*/);
-        expect(callbackSpy).not.to.have.been.calledOnce;
-      });
-
-      ['chat', 'away', 'dnd', 'xa'].forEach((item) => {
-        it(`${item} should be a valid value`, () => {
-          let options = {
-            status: 'test',
-            show: item
-          };
-
-          expect(() => {
-            hipstat(options, callbackSpy);
-          }).not.to.throw();
-          expect(viewUser).to.have.been.calledOnce;
-        });
-      });
-
-    });
-
   });
 
   describe('update status', () => {
-
     describe('failure', () => {
-
       it('should callback with error when retrieving user fails', () => {
         let error = 'error';
 
-        hipstat(OPTIONS, callbackSpy);
+        hipstat([], {}, callbackSpy);
         viewUser.callArgWith(1, error, null);
 
         expect(callbackSpy).to.have.been.calledWith(error, null);
         expect(updateUser).not.to.have.been.calledOnce;
       });
-
       it('should callback with error when updating user fails', () => {
         let error = 'error';
-        let user = {
-          presence: null
-        };
 
-        hipstat(OPTIONS, callbackSpy);
+        hipstat([], {}, callbackSpy);
         viewUser.callArgWith(1, null, user);
         updateUser.callArgWith(1, error, null);
 
@@ -129,16 +124,12 @@ describe('hipstat', () => {
         expect(viewUser).to.have.been.calledOnce;
         expect(updateUser).to.have.been.calledOnce;
       });
-
     });
-
     describe('success', () => {
-
       it('should callback with successful response when retrieving and updating user succeed', () => {
-        let user = {};
         let successResponse = 'success';
 
-        hipstat(OPTIONS, callbackSpy);
+        hipstat([], {}, callbackSpy);
         viewUser.callArgWith(1, null, user);
         updateUser.callArgWith(1, null, successResponse);
 
@@ -146,21 +137,15 @@ describe('hipstat', () => {
         expect(viewUser).to.have.been.calledOnce;
         expect(updateUser).to.have.been.calledOnce;
       });
-
       it('should modify user.presence with updated status and availability', () => {
-        let user = {};
-
-        hipstat(OPTIONS, callbackSpy);
+        hipstat(['test'], {}, callbackSpy);
         viewUser.callArgWith(1, null, user);
 
-        expect(user.presence.status).to.equal(STATUS);
-        expect(user.presence.show).to.equal(SHOW);
+        expect(user.presence.status).to.equal('test');
+        expect(user.presence.show).to.equal('chat');
       });
-
     });
-
   });
-
 });
 
 /*eslint-enable no-unused-expressions */
