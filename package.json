@@ -7,15 +7,16 @@
   "author": {
     "name": "Macklin Underdown",
     "email": "macklinu@gmail.com",
-    "url": "mackli.nu"
+    "url": "http://mackli.nu"
   },
   "files": [
     "dist"
   ],
   "main": "dist/index.js",
-  "bin": "lib/cli.js",
+  "bin": "dist/cli.js",
   "keywords": [
-    "hipchat"
+    "hipchat",
+    "cli"
   ],
   "devDependencies": {
     "babel-core": "^5.5.0",
