@@ -1,6 +1,6 @@
 {
   "name": "hipstat",
-  "version": "1.0.0",
+  "version": "0.9.0",
   "description": "Update your HipChat status",
   "homepage": "https://github.com/macklinu/hipstat",
   "repository": "macklinu/hipstat",
@@ -34,7 +34,8 @@
     "mocha": "^2.3.3",
     "mocha-sinon": "^1.1.4",
     "sinon": "^1.17.1",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "user-home": "^2.0.0"
   },
   "scripts": {
     "prepublish": "gulp prepublish",
@@ -42,6 +43,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
+    "configstore": "^1.2.1",
     "dotenv": "^1.2.0",
     "hipchatter": "^0.2.0",
     "meow": "^3.3.0"
