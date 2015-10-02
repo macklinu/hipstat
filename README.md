@@ -8,6 +8,28 @@
 $ npm install --g hipstat
 ```
 
+## Setup
+
+Visit [https://hipchat.com/account/api](https://hipchat.com/account/api).
+
+Create an API V2 token with __Administer Group__ and __View Group__ scopes.
+
+![](http://i.imgur.com/shDgoyy.png)
+
+Copy your token and store it in hipstat's config.
+
+```sh
+$ hipstat --config token API_TOKEN
+```
+
+Finally, store your Hipchat email address in hipstat's config.
+
+```sh
+$ hipstat --config email my.email.address@company.com
+```
+
+You're ready to go!
+
 ## Usage
 
 ```
