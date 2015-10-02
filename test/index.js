@@ -158,13 +158,13 @@ describe('hipstat', () => {
       hipstat([VALID_TOKEN], {config: 'token'}, callbackSpy);
 
       expect(configSet).to.have.been.calledWith('token', VALID_TOKEN);
-      expect(callbackSpy).to.have.been.calledWith(null, 'Token updated.');
+      expect(callbackSpy).to.have.been.calledWith(null, 'token updated.');
     });
     it('should set the HipChat user email address if `hipstat --config email [email]` is called', () => {
       hipstat([VALID_EMAIL], {config: 'email'}, callbackSpy);
 
       expect(configSet).to.have.been.calledWith('email', VALID_EMAIL);
-      expect(callbackSpy).to.have.been.calledWith(null, 'Email updated.');
+      expect(callbackSpy).to.have.been.calledWith(null, 'email updated.');
     });
     it('should return the stored HipChat API token if `hipstat --config token` is called', () => {
       hipstat([], {config: 'token'}, callbackSpy);

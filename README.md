@@ -11,22 +11,55 @@ $ npm install --g hipstat
 ## Usage
 
 ```
-$ hipstat [availability] [status]
+$ hipstat [config] KEY VALUE
+$ hipstat [options] MESSAGE
+```
 
-[availability] (optional)
+## Options
+
+```
+[config]
+-c, --config the entry point for handling hipstat config variables.
+
+KEY (required)
+  when provided by itself, returns config value.
+  when provided with VALUE, sets config value.
+  possible values:
+    token  HipChat API token
+    email  HipChat email address
+    all    prints config file (to be used without VALUE)
+VALUE (optional)
+  when provided, sets the VALUE for KEY.
+
+[options]
 -o, --online sets availability to 'Available'.
 -a, --away   sets availability to 'Away'.
 -b, --busy   sets availability to 'Do Not Disturb'.
 No option defaults to --online.
 
-[status]
-The status message to post to HipChat.
-Not supplying a message clears your HipChat status.
+MESSAGE (optional)
+  when supplied, the status message to post to HipChat.
+  if blank, clears the current HipChat status message.
 ```
 
 ## Examples
 
 ```sh
+$ hipstat --config token [token]
+[ sets HipChat API token ]
+
+$ hipstat --config email [email]
+[ sets HipChat email address ]
+
+$ hipstat --config token
+[ prints HipChat API token ]
+
+$ hipstat --config email
+[ prints HipChat email address ]
+
+$ hipstat --config all
+[ prints config data ]
+
 $ hipstat
 [ sets availability to 'Available' ]
 [ clears status ]
