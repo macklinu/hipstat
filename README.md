@@ -5,8 +5,7 @@
 ## Install
 
 ```sh
-# until published to npm
-$ npm install --g macklinu/hipstat
+$ npm install --g hipstat
 ```
 
 ## Setup
