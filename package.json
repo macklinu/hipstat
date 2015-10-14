@@ -1,7 +1,7 @@
 {
   "name": "hipstat",
   "version": "1.1.1",
-  "description": "Update your HipChat status",
+  "description": "Update your HipChat status from the command line",
   "homepage": "https://github.com/macklinu/hipstat",
   "repository": "macklinu/hipstat",
   "author": {

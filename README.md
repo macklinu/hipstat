@@ -62,6 +62,10 @@ No option defaults to --online.
 MESSAGE (optional)
   when supplied, the status message to post to HipChat.
   if blank, clears the current HipChat status message.
+
+[other]
+-v, --verbose runs in verbose mode
+--version     prints the version of hipstat
 ```
 
 ## Examples
