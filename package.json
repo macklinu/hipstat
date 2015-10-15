@@ -46,6 +46,7 @@
     "configstore": "^1.2.1",
     "hipchatter": "^0.2.0",
     "meow": "^3.3.0",
+    "node-emoji": "^1.0.3",
     "update-notifier": "^0.5.0"
   }
 }
